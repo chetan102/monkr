@@ -5,6 +5,7 @@ import boxen from 'boxen';
 import ora from 'ora';
 import gradient from 'gradient-string';
 import { promisify } from 'util';
+import inquirer from 'inquirer';
 
 async function figletAsync(text: string, options: figlet.Options): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -34,11 +35,12 @@ async function showTitle() {
     console.log(gradient.rainbow.multiline(title));
     console.log(
         boxen(
-            chalk.bold.cyan('💬  Devs. Chat. Collaborate.') + '\n\n' + chalk.gray('Type "help" to explore commands.'),
+            chalk.bold('💬 Monkr: Where Devs Talk & Collaborate\n') +
+            chalk.gray('Find groups, chat 1-on-1, build ideas together.'),
             {
                 padding: 1,
                 margin: 1,
-                borderStyle: 'double',
+                borderStyle: 'round',
                 borderColor: 'cyan',
             }
         )
@@ -46,68 +48,66 @@ async function showTitle() {
     rl.prompt();
 }
 
+
+async function mainMenu() {
+    const choices = [
+        { name: '👥 Explore Dev Groups', value: 'groups' },
+        { name: '💬 Start 1-on-1 Chat', value: 'chat' },
+        { name: '❓ What is Monkr?', value: 'help' },
+        { name: '🚪 Exit', value: 'exit' },
+    ];
+
+    const { action } = await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'action',
+            message: chalk.cyan('Select an option:'),
+            choices,
+        },
+    ]);
+
+    switch (action) {
+        case 'groups':
+            await showGroups();
+            break;
+        case 'chat':
+            await showChat();
+            break;
+        case 'help':
+            showHelp();
+            break;
+        case 'exit':
+            console.log(chalk.red('\n👋 Goodbye! Keep building, stay curious.\n'));
+            process.exit(0);
+    }
+
+    await mainMenu(); // Loop back to menu
+}
+
+async function showGroups() {
+    console.log('\n' + chalk.bold.magenta('👥 Top Dev Groups:\n'));
+    console.log(chalk.white('• JavaScript Ninjas'));
+    console.log(chalk.white('• Indie Hackers Lounge'));
+    console.log(chalk.white('• AI Dev Builders'));
+    console.log(chalk.white('• Startup Founders Hub\n'));
+}
+
+async function showChat() {
+    console.log('\n' + chalk.greenBright('💬 1-on-1 Chat feature coming soon!\n'));
+}
+
 function showHelp() {
-    console.log(chalk.bold.magenta('\nAvailable Commands:\n'));
-    console.log(`${chalk.cyan('  hello')}       → Greet the CLI`);
-    console.log(`${chalk.cyan('  spin')}        → Show loading spinner`);
-    console.log(`${chalk.cyan('  groups')}      → View or join dev groups`);
-    console.log(`${chalk.cyan('  chat')}        → Start 1-on-1 chat`);
-    console.log(`${chalk.cyan('  help')}        → Show this help`);
-    console.log(`${chalk.cyan('  exit')}        → Exit Monkr\n`);
+    console.log('\n' + chalk.yellow.bold('📖 What is Monkr?\n'));
+    console.log(
+        chalk.gray(
+            'Monkr is your minimalist dev hangout inside the terminal.\n' +
+            'Find people building similar things, chat, share, and start collaborating.\n' +
+            'Perfect for indie makers, startup hackers, or AI tinkerers.'
+        )
+    );
 }
 
-async function startCLI() {
+(async () => {
     await showTitle();
-    rl.prompt();
-
-    rl.on('line', async (line: string) => {
-        const command = line.trim().toLowerCase();
-
-        switch (command) {
-            case 'hello':
-                console.log(chalk.greenBright('\n👋 Welcome to Monkr — the dev-friendly CLI!\n'));
-                break;
-
-            case 'help':
-                showHelp();
-                break;
-
-            case 'spin': {
-                const spinner = ora('🌀 Connecting to the dev realm...').start();
-                setTimeout(() => {
-                    spinner.succeed('✅ Connected!');
-                    rl.prompt();
-                }, 2000);
-                return;
-            }
-
-            case 'groups':
-                console.log(chalk.blue('\n👥 Explore groups like:'));
-                console.log(chalk.yellow('• JavaScript Ninjas'));
-                console.log(chalk.yellow('• Indie Hackers Lounge'));
-                console.log(chalk.yellow('• AI Dev Builders\n'));
-                break;
-
-            case 'chat':
-                console.log(chalk.green('\n💬 Start chatting with a dev! (feature coming soon)\n'));
-                break;
-
-            case 'exit':
-                console.log(chalk.redBright('\n👋 Exiting Monkr. Stay creative!\n'));
-                rl.close();
-                return;
-
-            default:
-                console.log(chalk.redBright(`\n❌ Unknown command: ${command}\nType "help" to see what you can do.\n`));
-        }
-
-        rl.prompt();
-    });
-
-    rl.on('close', () => {
-        console.log(chalk.gray('CLI session ended.'));
-        process.exit(0);
-    });
-}
-
-startCLI();
+    await mainMenu();
+})();
