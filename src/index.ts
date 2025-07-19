@@ -93,7 +93,25 @@ async function showGroups() {
 }
 
 async function showChat() {
-    console.log('\n' + chalk.greenBright('💬 1-on-1 Chat feature coming soon!\n'));
+    console.clear();
+    console.log(chalk.greenBright('\n💬 You’re now in a 1-on-1 chat room. Type "exit" to leave.\n'));
+
+    rl.setPrompt(chalk.magenta('You > '));
+    rl.prompt();
+
+    rl.on('line', (line) => {
+        if (line.trim().toLowerCase() === 'exit') {
+            rl.removeAllListeners('line'); // clear the handler
+            mainMenu(); // back to menu
+            return;
+        }
+
+        // Fake reply (you can replace this with AI later)
+        console.log(chalk.blue('MonkrBot > ') + chalk.gray(`I see you said: "${line.trim()}"`));
+
+
+        rl.prompt(); // Keep asking for input
+    });
 }
 
 function showHelp() {
