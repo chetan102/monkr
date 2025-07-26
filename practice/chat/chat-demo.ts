@@ -1,18 +1,18 @@
 import blessed from 'blessed';
 import chalk from 'chalk';
 
-// Create a screen object.
+// Create screen
 const screen = blessed.screen({
   smartCSR: true,
   title: 'MonkrChat',
 });
 
-// Message box (no borders, scrollable)
+// Chat Box (no border, clean layout)
 const chatBox = blessed.box({
   top: 1,
   left: 2,
   width: '95%',
-  height: '85%',
+  height: '70%', // leave more room for spacing
   tags: true,
   scrollable: true,
   alwaysScroll: true,
@@ -21,43 +21,12 @@ const chatBox = blessed.box({
   vi: true,
   style: {
     fg: 'white',
-    bg: '',
     scrollbar: {
       bg: 'magenta',
     },
   },
   scrollbar: {
     ch: ' ',
-  },
-});
-
-// Input box (borderless, with placeholder)
-const inputBox = blessed.textbox({
-  bottom: 0,
-  left: 2,
-  width: '95%',
-  height: 3,
-  inputOnFocus: true,
-  keys: true,
-  mouse: true,
-  padding: {
-    left: 1,
-  },
-  style: {
-    fg: 'white',
-    bg: '',
-  },
-});
-
-// Placeholder hint
-const inputPlaceholder = blessed.box({
-  bottom: 0,
-  left: 3,
-  height: 3,
-  content: chalk.gray('Type your message...'),
-  tags: true,
-  style: {
-    fg: 'gray',
   },
 });
 
@@ -71,47 +40,97 @@ const heading = blessed.box({
   tags: true,
 });
 
-// Add elements to screen
+// Input Wrapper with border and Y gap
+const inputWrapper = blessed.box({
+  bottom: 1,
+  width: '95%',
+  height: 5,
+  border: {
+    type: 'line',
+  },
+  style: {
+    border: {
+      fg: 'gray',
+    },
+  },
+});
+
+// Input Textbox
+const inputBox = blessed.textbox({
+  parent: inputWrapper,
+  top: 0,
+  left: 1,
+  width: '100%-2',
+  height: 3,
+  inputOnFocus: true,
+  mouse: true,
+  keys: true,
+  padding: {
+    left: 1,
+  },
+  style: {
+    fg: 'white',
+    bg: '',
+  },
+});
+
+// Placeholder (shown only when empty and not focused)
+const inputPlaceholder = blessed.box({
+  parent: inputBox,
+  top: 0,
+  left: 0,
+  height: 1,
+  width: '100%',
+  content: chalk.gray('Type your message...'),
+  tags: true,
+//   style: {
+//     fg: 'gray',
+//   },
+});
+
+// Add to screen
 screen.append(heading);
 screen.append(chatBox);
-screen.append(inputBox);
-screen.append(inputPlaceholder);
+screen.append(inputWrapper);
 
-// Chat message store
+// Messages
 const chatMessages: string[] = [];
 
-// Render chat
 function renderChat() {
   chatBox.setContent(chatMessages.join('\n'));
   chatBox.scrollTo(chatMessages.length);
   screen.render();
 }
 
-// Send a message
 function sendMessage(sender: 'You' | 'Bot', message: string) {
-  const timestamp = new Date().toLocaleTimeString();
   const formatted = sender === 'You'
-    ? `{gray-fg}[${timestamp}]{/} {magenta-fg}${sender}:{/} ${message}`
-    : `{gray-fg}[${timestamp}]{/} {blue-fg}${sender}:{/} {gray-fg}${message}{/}`;
+    ? `{magenta-fg}${sender}:{/} ${chalk.white(message)}`
+    : `{blue-fg}${sender}:{/} {gray-fg}${message}{/}`;
   chatMessages.push(formatted);
   renderChat();
 }
 
-// Focus input on load
-inputBox.focus();
-screen.render();
+// Placeholder visibility handling
+function updatePlaceholder() {
+  const value = inputBox.getValue()?.trim();
+  if (!value && screen.focused !== inputBox) {
+    inputPlaceholder.show();
+  } else {
+    inputPlaceholder.hide();
+  }
+}
 
-// Input handling
+// Focus + blur behavior
 inputBox.on('focus', () => {
-  inputPlaceholder.hide();
+  updatePlaceholder();
   screen.render();
 });
-
 inputBox.on('blur', () => {
-  if (!inputBox.getValue()) inputPlaceholder.show();
+  updatePlaceholder();
   screen.render();
 });
 
+// Submit message
 inputBox.on('submit', (text) => {
   const trimmed = text.trim();
   if (trimmed) {
@@ -119,12 +138,12 @@ inputBox.on('submit', (text) => {
     setTimeout(() => sendMessage('Bot', `You said: "${trimmed}"`), 800);
   }
   inputBox.clearValue();
+  updatePlaceholder();
   inputBox.focus();
-  inputPlaceholder.show();
   screen.render();
 });
 
-// Fake messages every 3 seconds
+// Auto fake bot messages
 setInterval(() => {
   const msgs = [
     'Hello!',
@@ -135,7 +154,11 @@ setInterval(() => {
   ];
   const random = msgs[Math.floor(Math.random() * msgs.length)];
   sendMessage('Bot', random);
-}, 3000);
+}, 6000);
 
-// Exit on Escape, q, or Ctrl+C
+// Initial focus and render
+inputBox.focus();
+screen.render();
+
+// Exit keys
 screen.key(['escape', 'q', 'C-c'], () => process.exit(0));
