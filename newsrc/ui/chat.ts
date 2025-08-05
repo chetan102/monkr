@@ -24,10 +24,10 @@ const header = blessed.box({
   style: { fg: 7, bg: 0 }, // white text, black bg
 });
 
-// Chat message box
+// Chat message box with padding and border
 const messages = blessed.box({
   top: 3,
-  bottom: 5,
+  bottom: 6, // leave space for input box
   left: 0,
   width: '100%',
   scrollable: true,
@@ -45,16 +45,28 @@ const messages = blessed.box({
   },
 });
 
-// Input box
+// Enhanced Input box to visually match the message box style
 const input = blessed.textbox({
   bottom: 0,
-  height: 4,
+  height: 6,
   width: '100%',
   inputOnFocus: true,
-  padding: { left: 2 },
-  border: { type: 'line', fg: 8 }, // grey border
-  style: { fg: 7, bg: 0, focus: { bg: 8 } }, // white fg, black bg, grey focus bg
+  padding: { left: 2, right: 2, top: 1, bottom: 1 },
+  border: { type: 'line', fg: 8 }, // grey border matching messages box
+  style: {
+    fg: 7,
+    bg: 0,
+    focus: {
+      border: { fg: 7 } // border changes to white when focused
+    },
+    hover: {
+      border: { fg: 7 } // border changes to white on hover too
+    }
+  },
   label: chalk.dim(' Type your message... '),
+  keys: true,
+  mouse: true,
+  // Removed scrollbar for cleaner input box
 });
 
 screen.append(header);
@@ -69,11 +81,14 @@ function formatTime(): string {
   return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-// Add message with subtle formatting and cyan highlight for user name
+// Add message with spacing and subtle formatting
 function addMessage(sender: string, text: string, isUser = false) {
   const time = formatTime();
   const name = isUser ? chalk.cyan(sender) : chalk.gray(sender);
+
+  // Push message and an empty line as spacing
   messages.pushLine(`{bold}${name}{/bold} {gray-fg}[${time}]{/gray-fg}: ${text}`);
+  messages.pushLine(''); // extra spacing between messages
   messages.setScrollPerc(100);
   screen.render();
 }
