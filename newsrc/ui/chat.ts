@@ -1,92 +1,105 @@
-import readline from 'readline';
+import blessed from 'blessed';
 import chalk from 'chalk';
-import boxen from 'boxen';
-import ansiEscapes from 'ansi-escapes';
+import gradient from 'gradient-string';
 
-const messages: { from: string; text: string }[] = [];
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  terminal: true,
+// Create screen
+const screen = blessed.screen({
+  smartCSR: true,
+  title: 'Monkr CLI Chat',
+  fullUnicode: true,
+  dockBorders: true,
+  style: { bg: 0 }, // black background
 });
 
-function formatMessage(from: string, text: string, width: number): string {
-  const fromLabel = {
-    You: chalk.greenBright('🧑 You'),
-    Bot: chalk.cyan('🤖 Bot'),
-    Stranger: chalk.yellowBright('👤 Stranger'),
-  }[from] || chalk.magentaBright(from);
+// Header with subtle gradient
+const header = blessed.box({
+  top: 0,
+  height: 3,
+  width: '100%',
+  tags: true,
+  content: gradient('cyan', 'white')('   MONKR CLI CHAT   '),
+  align: 'center',
+  valign: 'middle',
+  border: { type: 'line', fg: 8 }, // grey border
+  style: { fg: 7, bg: 0 }, // white text, black bg
+});
 
-  const msgBox = boxen(text, {
-    padding: { left: 1, right: 1 },
-    borderStyle: 'classic',
-    borderColor: from === 'You' ? 'greenBright' : from === 'Bot' ? 'cyan' : 'yellowBright',
-    width: Math.min(width - 10, 60),
-  });
+// Chat message box
+const messages = blessed.box({
+  top: 3,
+  bottom: 5,
+  left: 0,
+  width: '100%',
+  scrollable: true,
+  alwaysScroll: true,
+  keys: true,
+  mouse: true,
+  tags: true,
+  padding: { left: 2, right: 2, top: 1, bottom: 1 },
+  style: { fg: 7, bg: 0 }, // white fg, black bg
+  border: { type: 'line', fg: 8 }, // grey border
+  scrollbar: {
+    ch: ' ',
+    track: { bg: 8 },
+    style: { bg: 7 },
+  },
+});
 
-  return `${fromLabel}:\n${msgBox}`;
+// Input box
+const input = blessed.textbox({
+  bottom: 0,
+  height: 4,
+  width: '100%',
+  inputOnFocus: true,
+  padding: { left: 2 },
+  border: { type: 'line', fg: 8 }, // grey border
+  style: { fg: 7, bg: 0, focus: { bg: 8 } }, // white fg, black bg, grey focus bg
+  label: chalk.dim(' Type your message... '),
+});
+
+screen.append(header);
+screen.append(messages);
+screen.append(input);
+
+input.focus();
+
+// Format time (HH:mm)
+function formatTime(): string {
+  const d = new Date();
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-function render(groupName: string) {
-  const termHeight = process.stdout.rows;
-  const termWidth = process.stdout.columns;
-
-  const header = boxen(chalk.bold.cyanBright(`💬  Monkr Chat — Group: ${groupName}`), {
-    padding: 1,
-    borderStyle: 'round',
-    borderColor: 'cyanBright',
-    align: 'center',
-    width: termWidth - 4,
-  });
-
-  const visibleHeight = termHeight - 10;
-  const visibleMessages = messages.slice(-visibleHeight);
-  const formatted = visibleMessages.map(msg => formatMessage(msg.from, msg.text, termWidth)).join('\n\n');
-
-  const chatBox = boxen(formatted || chalk.gray('No messages yet...'), {
-    padding: 1,
-    borderStyle: 'round',
-    borderColor: 'gray',
-    width: termWidth - 4,
-    height: visibleHeight,
-    title: '💬 Chat',
-    titleAlignment: 'left',
-  });
-
-  process.stdout.write(ansiEscapes.clearScreen);
-  console.log(header);
-  console.log(chatBox);
-  process.stdout.write(chalk.bold.green('\nType your message below (Ctrl+C to exit):\n\n'));
-  rl.prompt(true);
+// Add message with subtle formatting and cyan highlight for user name
+function addMessage(sender: string, text: string, isUser = false) {
+  const time = formatTime();
+  const name = isUser ? chalk.cyan(sender) : chalk.gray(sender);
+  messages.pushLine(`{bold}${name}{/bold} {gray-fg}[${time}]{/gray-fg}: ${text}`);
+  messages.setScrollPerc(100);
+  screen.render();
 }
 
-function startChat(groupName: string) {
-  messages.push({ from: 'Bot', text: `👋 Welcome to ${groupName}!` });
-  messages.push({ from: 'Stranger', text: 'Hey, how are you?' });
-  render(groupName);
-
-  rl.setPrompt(chalk.greenBright('> '));
-  rl.on('line', (input: string) => {
-    const trimmed = input.trim();
-    if (trimmed) {
-      messages.push({ from: 'You', text: trimmed });
-      render(groupName);
-
-      setTimeout(() => {
-        messages.push({ from: 'Bot', text: `You said: "${trimmed}"` });
-        render(groupName);
-      }, 500);
-    } else {
-      render(groupName);
-    }
-  });
-
-  rl.on('SIGINT', () => {
-    console.log(chalk.redBright('\n👋 Exiting chat. Goodbye!\n'));
-    process.exit(0);
-  });
+// Dummy bot reply
+function botReply(text: string) {
+  setTimeout(() => {
+    addMessage('Bot', `You said: ${text}`, false);
+  }, 1200);
 }
 
-const groupName = process.argv[2] || '#monkr-room';
-startChat(groupName);
+// Handle user input submit
+input.on('submit', (text) => {
+  if (!text.trim()) {
+    input.clearValue();
+    screen.render();
+    return;
+  }
+  addMessage('You', text.trim(), true);
+  botReply(text.trim());
+  input.clearValue();
+  screen.render();
+  input.focus();
+});
+
+// Quit keys: ESC, q, Ctrl+C
+screen.key(['escape', 'q', 'C-c'], () => process.exit(0));
+
+screen.render();
