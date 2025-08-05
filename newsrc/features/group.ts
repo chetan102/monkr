@@ -1,6 +1,5 @@
-// === FILE: src/features/groups.ts ===
 import chalk from 'chalk';
-import { input, select } from '@inquirer/prompts';
+import inquirer from 'inquirer';
 
 const groups = [
   { name: 'TypeScript Wizards', membersOnline: 12 },
@@ -10,25 +9,29 @@ const groups = [
   { name: 'Open Source Lovers', membersOnline: 9 }
 ];
 
-export async function viewGroups() {
+export async function viewGroups(): Promise<string | undefined> {
   console.clear();
   console.log(chalk.bold.blue('💻 Available Developer Groups'));
   console.log('----------------------------------\n');
 
-  const groupChoices = groups.map((group) => ({
+  const groupChoices = groups.map(group => ({
     name: `${group.name} (${group.membersOnline} online)`,
-    value: group.name
+    value: group.name,
   }));
 
-  const selected = await select({
-    message: 'Pick a group to join:',
-    choices: groupChoices
-  });
+  const response = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'group',
+      message: 'Pick a group to join:',
+      choices: groupChoices
+      
+    },
+  ]);
 
-  const selectedGroup = groups.find(g => g.name === selected);
-  if (selectedGroup) {
-    //  startGroupChat(selectedGroup.name);
-  }
+  // ✅ Simulate "clearPromptOnDone"
+  console.clear();
+  return response.group;
 }
 
 export { groups };

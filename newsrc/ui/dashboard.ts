@@ -29,7 +29,7 @@ export async function showDashboard() {
 
     switch (selectedOption) {
       case '🧑‍💻 View Dev Groups':
-        await viewGroups();
+       return await viewGroups();
         break;
       case '👥 View Group Members':
         // await viewMembers();
