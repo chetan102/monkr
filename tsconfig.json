@@ -1,17 +1,19 @@
+
 {
-    "compilerOptions": {
-      "target": "ES2020",
-      "module": "ESNext",
-      "outDir": "dist",
-      "rootDir": "./practice/test",
-      "moduleResolution": "node",
-      "esModuleInterop": true,
-      "resolveJsonModule": true,
-      "skipLibCheck": true,
-      "declaration": true,
-      "forceConsistentCasingInFileNames": true,
-    },
-    "include": ["practice/test/**/*.ts"],
-    "exclude": ["node_modules", "dist"]
-  }
-  
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "outDir": "dist",
+    "rootDir": "./",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true
+  },
+  "include": ["src/**/*.ts", "newsrc/**/*.ts", "practice/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
