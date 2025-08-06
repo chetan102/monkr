@@ -2,14 +2,14 @@
     "name": "monkr",
     "version": "1.0.0",
     "type": "module",
-    "description": "",
-    "main": "index.js",
+    "description": "newsrc/index.ts",
+    "main": "index.ts",
     "bin": {
         "monkr": "./dist/test.js"
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "tsx src/index.ts",
+        "dev": "tsx newsrc/index.ts",
         "practice": "tsx test/test.ts",
         "build": "npx tsc"
     },
