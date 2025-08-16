@@ -2,6 +2,7 @@
     "name": "monkr",
     "version": "0.0.1-test.0",
     "private": false,
+    "license": "MIT",
     "scripts": {
         "start:build": "node dist/apps/cli/src/main.js"
     },

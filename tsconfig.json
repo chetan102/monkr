@@ -26,6 +26,12 @@
     },
     {
       "path": "./libs/my-new-lib"
+    },
+    {
+      "path": "./libs/my-new-lib"
+    },
+    {
+      "path": "./libs/my-new-lib"
     }
   ]
 }
