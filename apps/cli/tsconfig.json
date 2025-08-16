@@ -1,21 +1,21 @@
 {
-    "extends": "../../tsconfig.base.json",
-    "files": [],
-    "references": [
-        {
-            "path": "./tsconfig.app.json"
-        }
-    ],
-    "compilerOptions": {
-        "outDir": "dist",
-        "rootDir": ".",
-        "module": "ESNext",
-        "moduleResolution": "Bundler",
-        "target": "ES2022",
-        "sourceMap": true
+  "extends": "../../tsconfig.base.json",
+  "files": [],
+  "references": [
+    {
+      "path": "../../libs/core"
     },
-    "include": [
-        "src",
-        "bin"
-    ]
+    {
+      "path": "./tsconfig.app.json"
+    }
+  ],
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2022",
+    "sourceMap": true
+  },
+  "include": ["src", "bin"]
 }

@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build:cli": "nx build monkr",
-    "serve:cli": "nx serve monkr"
+    "build:cli": "nx build monkr  --configuration=production",
+    "serve:cli": "nx serve monkr --configuration=development",
+    "pack:cli": "node scripts/package-cli.js"
   },
   "private": true,
   "devDependencies": {
@@ -12,13 +13,14 @@
     "@nx/esbuild": "21.3.11",
     "@nx/eslint": "21.3.11",
     "@nx/eslint-plugin": "21.3.11",
-    "@nx/js": "21.3.11",
-    "@nx/node": "^21.3.11",
+    "@nx/js": "21.4.0",
+    "@nx/node": "21.4.0",
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
     "@types/figlet": "^1.7.0",
     "@types/node": "~18.16.9",
+    "archiver": "^7.0.1",
     "esbuild": "^0.19.2",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
@@ -39,10 +41,7 @@
     "libs/my-new-lib"
   ],
   "dependencies": {
-    "boxen": "^8.0.1",
-    "figlet": "^1.8.2",
-    "gradient-string": "^3.0.0",
-    "yargs": "^18.0.0"
+    "monkr": "workspace:*"
   },
   "nx": {
     "includedScripts": [],

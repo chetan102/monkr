@@ -7,7 +7,7 @@ import gradient from 'gradient-string';
 import { core } from '@monkr/core';
 
 async function run() {
-    console.log(core())
+    core();
     console.clear();
     cfonts.say('MONKR', { font: 'block', colors: ['cyan', 'magenta'], align: 'center' });
 

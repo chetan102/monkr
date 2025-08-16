@@ -7,28 +7,7 @@
       "path": "./apps/cli"
     },
     {
-      "path": "./core"
-    },
-    {
       "path": "./libs/core"
-    },
-    {
-      "path": "./apps/cli/libs/my-new-lib"
-    },
-    {
-      "path": "./apps/cli/libs/my-new-lib"
-    },
-    {
-      "path": "./apps/cli/libs/my-new-lib"
-    },
-    {
-      "path": "./libs/my-new-lib"
-    },
-    {
-      "path": "./libs/my-new-lib"
-    },
-    {
-      "path": "./libs/my-new-lib"
     },
     {
       "path": "./libs/my-new-lib"

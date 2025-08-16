@@ -1,86 +1,97 @@
 {
-    "name": "monkr",
-    "version": "0.0.1-test.1",
-    "private": false,
-    "license": "MIT",
-    "bin": {
-        "monkr": "main.js"
-    },
-    "files": [
-        "main.js",
-        "README.md",
-        "LICENSE"
-    ],
-    "nx": {
-        "targets": {
-            "build": {
-                "executor": "@nx/esbuild:esbuild",
-                "outputs": [
-                    "{options.outputPath}"
-                ],
-                "defaultConfiguration": "production",
-                "options": {
-                    "platform": "node",
-                    "outputPath": "apps/cli/dist",
-                    "format": [
-                        "esm"
-                    ],
-                    "bundle": false,
-                    "main": "apps/cli/src/main.ts",
-                    "tsConfig": "apps/cli/tsconfig.app.json",
-                    "assets": [
-                        "apps/cli/package.json",
-                        "README.md",
-                        "LICENSE",
-                        ".npmignore"
-                    ],
-                   "esbuildOptions": {
-                        "sourcemap": true,
-                        "outExtension": {
-                            ".js": ".js"
-                        },
-                        "banner": {
-                            "js": "#!/usr/bin/env node"
-                        },
-                        "outfile": "apps/cli/dist/main.js"
-                    }
-                },
-                  "configurations": {
-                    "development": {
-                        "esbuildOptions": {
-                            "sourcemap": true
-                        }
-                    },
-                    "production": {
-                        "esbuildOptions": {
-                            "sourcemap": false
-                        }
-                    }
-                }
+  "name": "monkr",
+  "version": "0.0.1-test.3",
+  "private": false,
+  "license": "MIT",
+  "description": "Monkr is a modern, developer-first CLI group chat and random 1-on-1 chat platform.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chetan102/monkr.git"
+  },
+  "homepage": "https://monkr.dev",
+  "bin": {
+    "monkr": "main.cjs"
+  },
+  "files": [
+    "main.cjs",
+    "README.md",
+    "LICENSE"
+  ],
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "thirdParty": false,
+          "platform": "node",
+          "outputPath": "apps/cli/dist",
+          "format": [
+            "cjs"
+          ],
+          "bundle": true,
+          "packages": "bundle",
+          "main": "apps/cli/src/main.ts",
+          "tsConfig": "apps/cli/tsconfig.app.json",
+          "assets": [
+            "apps/cli/package.json",
+            "README.md",
+            "LICENSE",
+            ".npmignore"
+          ],
+          "esbuildOptions": {
+            "banner": {
+              "js": "#!/usr/bin/env node"
             },
-            "serve": {
-                "continuous": true,
-                "executor": "@nx/js:node",
-                "defaultConfiguration": "development",
-                "dependsOn": [
-                    "build"
-                ],
-                "options": {
-                    "buildTarget": "monkr:build",
-                    "runBuildTargetDependencies": false
-                },
-                "configurations": {
-                    "development": {
-                        "buildTarget": "monkr:build:development"
-                    },
-                    "production": {
-                        "buildTarget": "monkr:build:production"
-                    }
-                }
+            "outfile": "apps/cli/dist/main.js"
+          }
+        },
+        "configurations": {
+          "development": {
+            "esbuildOptions": {
+              "sourcemap": true
             }
+          },
+          "production": {
+            "esbuildOptions": {
+              "sourcemap": false,
+              "minify": true
+            }
+          }
         }
-    },
-    "dependencies": {
-        "user": "^0.0.0"
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "monkr:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "monkr:build:development"
+          },
+          "production": {
+            "buildTarget": "monkr:build:production"
+          }
+        }
+      }
     }
+  },
+  "dependencies": {
+    "boxen": "^8.0.1",
+    "cfonts": "^3.3.0",
+    "figlet": "^1.8.2",
+    "gradient-string": "^3.0.0",
+    "ora": "^8.2.0",
+    "tslib": "^2.8.1",
+    "yargs": "^18.0.0"
+  }
 }
