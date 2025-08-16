@@ -2,7 +2,10 @@
   "name": "@monkr/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build:cli": "nx build monkr",
+    "serve:cli": "nx serve monkr"
+  },
   "private": true,
   "devDependencies": {
     "@eslint/js": "^9.8.0",

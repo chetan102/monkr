@@ -1,14 +1,16 @@
 {
     "name": "monkr",
-    "version": "0.0.1-test.0",
+    "version": "0.0.1-test.1",
     "private": false,
     "license": "MIT",
-    "scripts": {
-        "start:build": "node dist/apps/cli/src/main.js"
-    },
     "bin": {
-        "monkr": "./dist/apps/cli/src/main.js"
+        "monkr": "main.js"
     },
+    "files": [
+        "main.js",
+        "README.md",
+        "LICENSE"
+    ],
     "nx": {
         "targets": {
             "build": {
@@ -21,29 +23,37 @@
                     "platform": "node",
                     "outputPath": "apps/cli/dist",
                     "format": [
-                        "cjs"
+                        "esm"
                     ],
                     "bundle": false,
                     "main": "apps/cli/src/main.ts",
                     "tsConfig": "apps/cli/tsconfig.app.json",
                     "assets": [
-                        "apps/cli/src/assets"
+                        "apps/cli/package.json",
+                        "README.md",
+                        "LICENSE",
+                        ".npmignore"
                     ],
-                    "esbuildOptions": {
+                   "esbuildOptions": {
                         "sourcemap": true,
                         "outExtension": {
                             ".js": ".js"
-                        }
+                        },
+                        "banner": {
+                            "js": "#!/usr/bin/env node"
+                        },
+                        "outfile": "apps/cli/dist/main.js"
                     }
                 },
-                "configurations": {
-                    "development": {},
+                  "configurations": {
+                    "development": {
+                        "esbuildOptions": {
+                            "sourcemap": true
+                        }
+                    },
                     "production": {
                         "esbuildOptions": {
-                            "sourcemap": false,
-                            "outExtension": {
-                                ".js": ".js"
-                            }
+                            "sourcemap": false
                         }
                     }
                 }
@@ -56,15 +66,15 @@
                     "build"
                 ],
                 "options": {
-                    "buildTarget": "@monkr/cli:build",
+                    "buildTarget": "monkr:build",
                     "runBuildTargetDependencies": false
                 },
                 "configurations": {
                     "development": {
-                        "buildTarget": "@monkr/cli:build:development"
+                        "buildTarget": "monkr:build:development"
                     },
                     "production": {
-                        "buildTarget": "@monkr/cli:build:production"
+                        "buildTarget": "monkr:build:production"
                     }
                 }
             }
