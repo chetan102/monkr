@@ -5,12 +5,6 @@
   "references": [
     {
       "path": "./apps/cli"
-    },
-    {
-      "path": "./libs/core"
-    },
-    {
-      "path": "./libs/my-new-lib"
     }
   ]
 }

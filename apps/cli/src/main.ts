@@ -4,10 +4,8 @@ import chalk from 'chalk';
 import ora from 'ora';
 import cfonts from 'cfonts';
 import gradient from 'gradient-string';
-import { core } from '@monkr/core';
 
 async function run() {
-    console.log(core())
     console.clear();
     cfonts.say('MONKR', { font: 'block', colors: ['cyan', 'magenta'], align: 'center' });
 
