@@ -86,6 +86,7 @@
     }
   },
   "dependencies": {
+    "blessed": "^0.1.81",
     "boxen": "^8.0.1",
     "cfonts": "^3.3.0",
     "figlet": "^1.8.2",
@@ -93,5 +94,8 @@
     "ora": "^8.2.0",
     "tslib": "^2.8.1",
     "yargs": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/blessed": "^0.1.25"
   }
 }

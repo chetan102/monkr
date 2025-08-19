@@ -1,30 +1,42 @@
-#!/usr/bin/env node
-import boxen from 'boxen';
-import chalk from 'chalk';
-import ora from 'ora';
-import cfonts from 'cfonts';
-import gradient from 'gradient-string';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { AppController } from './core/app-controller';
+import { ALL_COMMANDS } from './commands';
+import { createAppContext } from './core/context';
+import { UIManager } from './core/ui-manager';
 
-async function run() {
-    console.clear();
-    cfonts.say('MONKR', { font: 'block', colors: ['cyan', 'magenta'], align: 'center' });
+function startCLI() {
+    const ctx = createAppContext('cli');
+    ctx.app = new AppController(ctx);
 
-    console.log(
-        boxen(
-            gradient('cyan', 'magenta')('The CLI Discord for Developers') +
-            '\n' +
-            chalk.gray('by Monkr Team'),
-            { padding: 1, borderColor: 'cyan', align: 'center' }
-        )
-    );
+    const y = yargs(hideBin(process.argv))
+        .scriptName('monkr')
+        .usage('$0 <command> [args]')
+        .help();
 
-    const spinner = ora('Connecting to Monkr...').start();
-    await new Promise((res) => setTimeout(res, 800));
-    spinner.succeed('Connected!');
-    console.log(chalk.green('🚀 Ready to chat!'));
+    Object.values(ALL_COMMANDS).forEach(cmd => {
+        y.command(
+            cmd.name,
+            cmd.description,
+            () => { },
+            async argv => {
+                const args = argv._.slice(1).map(String);
+                console.log(`Running command: ${cmd.name} with args: ${args.join(', ')}`);
+                await cmd.run(args, ctx);
+            }
+        );
+    });
+    y.parse();
 }
 
-run().catch((err) => {
-    console.error(err);
-    process.exit(1);
-});
+function startUI() {
+    console.log('Starting UI...');
+    const uiManager = new UIManager();
+    uiManager.start();
+}
+
+// If no command (just 'monkr'), start UI
+console.log("process.argv.length:", process.argv);
+if (process.argv.length <= 2) startUI();
+else startCLI();
+

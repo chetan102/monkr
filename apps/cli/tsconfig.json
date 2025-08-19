@@ -12,7 +12,9 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "target": "ES2022",
-    "sourceMap": true
+    "sourceMap": true,
+    "paths": {
+    }
   },
   "include": ["src", "bin"]
 }
