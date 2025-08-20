@@ -1,9 +1,9 @@
 import blessed from 'blessed';
 import { IScreen } from '../types/screen/screen';
-import { AppContext } from '../core/context';
+import { IAppContext } from '../context/context';
 
 export default class HomeScreen implements IScreen {
-  constructor(private ctx: AppContext, private params? : any) {}
+  constructor(private ctx: IAppContext, private params? : any) {}
 
   render() {
     console.log('Rendering Home Screen');
