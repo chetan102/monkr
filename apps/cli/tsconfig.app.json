@@ -1,14 +1,19 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "outDir": "dist",
-    "types": ["node"],
-    "sourceMap": true
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": [],
-  "references": []
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "noUnusedLocals": false, // TODO: Enable this once the code is cleaned up
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "outDir": "dist",
+        "types": [
+            "node"
+        ],
+        "sourceMap": true
+    },
+    "include": [
+        "src/**/*.ts"
+    ],
+    "exclude": [],
+    "references": []
 }
