@@ -1,15 +1,14 @@
-// import { AuthService } from '../services/AuthService';
-// import { ChatService } from '../services/ChatService';
-// import { StateManager } from './StateManager';
-import { AuthService } from "../services";
-import { AppController } from "./app-controller";
+import { AuthService } from '../services';
+import { AppController } from './app-controller';
+import { StateManager } from './state-manager';
 
 export interface AppContext {
   mode: 'ui' | 'cli';
-//   state: StateManager;
-  services: {
+  services?: {
     auth: AuthService;
+    // add other services here
   };
+  state: StateManager;
   ui?: any;
   app?: AppController;
   currentScreen?: any;
@@ -17,13 +16,19 @@ export interface AppContext {
 }
 
 export function createAppContext(mode: 'ui' | 'cli', uiInst?: any): AppContext {
-  return {
+  const ctx = {
     mode,
-    // state: new StateManager(),
-    services: {
-      auth: new AuthService(), // Placeholder, will be set later
-    },
     ui: uiInst,
+    state: new StateManager(),
     app: undefined,
+    currentScreen: undefined,
+    screen: undefined,
+  } as AppContext;
+
+  ctx.services = {
+    auth: new AuthService(ctx),
+    // add other services here as needed
   };
+
+  return ctx;
 }

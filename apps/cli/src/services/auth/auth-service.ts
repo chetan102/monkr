@@ -1,7 +1,7 @@
 import { AppContext } from "../../core/context";
 
 export class AuthService {
-    // constructor(private ctx: AppContext) {}
+    constructor(private ctx: AppContext) {}
     
     async login(username: string, password: string): Promise<void> {
         console.log(`Logging in user: ${username}`);
