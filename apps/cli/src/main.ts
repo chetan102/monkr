@@ -1,3 +1,5 @@
+#!/usr/bin/env node                           // Shebang to run with Node.js - DO NOT REMOVE
+
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { ALL_COMMANDS } from './commands';

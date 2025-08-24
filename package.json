@@ -5,7 +5,10 @@
   "scripts": {
     "build:cli": "nx build monkr  --configuration=production",
     "serve:cli": "nx serve monkr --configuration=development",
-    "pack:cli": "node scripts/package-cli.js"
+    "start:cli": "npx tsx apps/cli/dist/main.cjs",
+    "pack:cli": "node scripts/package-cli.js",
+    "link": "npm link apps/cli/dist",
+    "unlink": "npm unlink apps/cli/dist"
   },
   "private": true,
   "devDependencies": {
@@ -40,9 +43,6 @@
     "apps/cli/libs/my-new-lib",
     "libs/my-new-lib"
   ],
-  "dependencies": {
-    "monkr": "workspace:*"
-  },
   "nx": {
     "includedScripts": [],
     "targets": {
@@ -55,5 +55,8 @@
         }
       }
     }
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.8.3"
   }
 }

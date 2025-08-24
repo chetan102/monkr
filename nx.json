@@ -32,6 +32,9 @@
       }
     }
   ],
+  "tui": {
+    "enabled": false
+  },
   "targetDefaults": {
     "@nx/esbuild:esbuild": {
       "cache": true,
